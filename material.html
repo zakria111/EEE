@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Course Materials</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-bg: #f9f9f9;
+            --dark-bg: #34495e;
+            --text-color: #333;
+            --light-text: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+        
+        #searchInput {
+            padding: 10px 15px;
+            width: 60%;
+            max-width: 600px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+        }
+        
+        .subjects-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .subject-card {
+            width: 300px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .subject-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        .subject-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .subject-header h2 {
+            font-size: 1.5rem;
+        }
+        
+        .subject-content {
+            padding: 15px;
+        }
+        
+        .subject-content p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .view-materials {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        .view-materials:hover {
+            background-color: #2980b9;
+        }
+        
+        .materials-section {
+            padding: 20px;
+            margin-top: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .materials-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .materials-header .back-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .materials-header .back-btn:hover {
+            background-color: #1a252f;
+        }
+        
+        .materials-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .material-card {
+            background-color: var(--light-bg);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+        
+        .material-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .material-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .material-type {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-right: 10px;
+        }
+        
+        .type-pdf {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .type-video {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .type-link {
+            background-color: #2ecc71;
+            color: white;
+        }
+        
+        .material-desc {
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+        
+        .material-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .material-actions a {
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        
+        .action-view {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .action-view:hover {
+            background-color: #2980b9;
+        }
+        
+        .action-download {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        .action-download:hover {
+            background-color: #1a252f;
+        }
+        
+        footer {
+            margin-top: 50px;
+            background-color: var(--secondary-color);
+            color: var(--light-text);
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* PDF Viewer Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+        }
+        
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: 90%;
+            margin: 2% auto;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            color: white;
+            background-color: var(--accent-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        iframe.pdf-viewer, 
+        .video-player {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Academic Course Materials</h1>
+        <p>Access all your course materials in one place</p>
+    </header>
+    
+    <div class="container">
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Search for courses or materials...">
+        </div>
+        
+        <div id="subjectsView">
+            <h2>Available Subjects</h2>
+            <div class="subjects-container" id="subjectsList">
+                <!-- Subject cards will be inserted here -->
+            </div>
+        </div>
+        
+        <div id="materialsView" style="display: none;">
+            <div class="materials-section">
+                <div class="materials-header">
+                    <h2 id="selectedSubject">Course Materials</h2>
+                    <button class="back-btn" id="backToSubjects">Back to Subjects</button>
+                </div>
+                <div class="materials-list" id="materialsList">
+                    <!-- Materials will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- PDF/Video Viewer Modal -->
+    <div class="modal" id="viewerModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <div id="viewerContainer"></div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 Academic Course Materials Portal</p>
+    </footer>
+    
+    <script>
+        // Course data
+        const subjects = [
+            {
+                id: 1,
+                name: "Operations Research",
+                description: "Study of mathematical techniques used for optimal decision-making",
+                materials: [
+                    {
+                        id: 101,
+                        title: "Introduction to Linear Programming",
+                        type: "pdf",
+                        description: "Comprehensive introduction to linear programming concepts and applications",
+                        url: "linear_programming.pdf"
+                    },
+                    {
+                        id: 102,
+                        title: "Simplex Method Tutorial",
+                        type: "video",
+                        description: "Step-by-step video tutorial on solving problems using the simplex method",
+                        url: "simplex_method.mp4"
+                    },
+                    {
+                        id: 103,
+                        title: "Transportation and Assignment Problems",
+                        type: "pdf",
+                        description: "Complete guide to transportation and assignment problems in OR",
+                        url: "transportation_problems.pdf"
+                    },
+                    {
+                        id: 104,
+                        title: "Dynamic Programming Techniques",
+                        type: "video",
+                        description: "Video lecture series on dynamic programming in operations research",
+                        url: "dynamic_programming.mp4"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Assembly Language",
+                description: "Low-level programming language specific to computer architecture",
+                materials: [
+                    {
+                        id: 201,
+                        title: "x86 Assembly Basics",
+                        type: "pdf",
+                        description: "Fundamentals of x86 assembly language programming",
+                        url: "#"
+                    },
+                    {
+                        id: 202,
+                        title: "Assembly Language Instruction Set",
+                        type: "pdf",
+                        description: "Comprehensive reference for assembly language instructions",
+                        url: "#"
+                    },
+                    {
+                        id: 203,
+                        title: "Memory Addressing Tutorial",
+                        type: "video",
+                        description: "Visual explanation of memory addressing modes in assembly",
+                        url: "#"
+                    },
+                    {
+                        id: 204,
+                        title: "Assembly Programming Projects",
+                        type: "pdf",
+                        description: "Collection of practical assembly programming exercises",
+                        url: "#"
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Data Structures",
+                description: "Study of organizing and storing data for efficient access and modification",
+                materials: [
+                    {
+                        id: 301,
+                        title: "Introduction to Data Structures",
+                        type: "pdf",
+                        description: "Overview of fundamental data structures concepts",
+                        url: "#"
+                    },
+                    {
+                        id: 302,
+                        title: "Arrays and Linked Lists",
+                        type: "video",
+                        description: "Detailed tutorial on implementing and using arrays and linked lists",
+                        url: "#"
+                    },
+                    {
+                        id: 303,
+                        title: "Trees and Graphs Implementation",
+                        type: "pdf",
+                        description: "Comprehensive guide to tree and graph data structures",
+                        url: "#"
+                    },
+                    {
+                        id: 304,
+                        title: "Hashing Techniques Tutorial",
+                        type: "video",
+                        description: "Video series explaining different hashing methods and collision resolution",
+                        url: "#"
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "Fundamentals of Multimedia",
+                description: "Study of different media types and their computer representation",
+                materials: [
+                    {
+                        id: 401,
+                        title: "Multimedia Concepts and Applications",
+                        type: "pdf",
+                        description: "Introduction to key multimedia concepts and modern applications",
+                        url: "#"
+                    },
+                    {
+                        id: 402,
+                        title: "Image Processing Techniques",
+                        type: "video",
+                        description: "Tutorial series on digital image processing fundamentals",
+                        url: "#"
+                    },
+                    {
+                        id: 403,
+                        title: "Audio and Video Compression",
+                        type: "pdf",
+                        description: "Technical guide to audio and video compression algorithms",
+                        url: "#"
+                    },
+                    {
+                        id: 404,
+                        title: "Multimedia Design Principles",
+                        type: "video",
+                        description: "Video lectures on effective multimedia content design",
+                        url: "#"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                name: "Systems Analysis and Design",
+                description: "Process of examining information systems to improve through better procedures",
+                materials: [
+                    {
+                        id: 501,
+                        title: "System Development Life Cycle",
+                        type: "pdf",
+                        description: "Comprehensive overview of SDLC phases and methodologies",
+                        url: "#"
+                    },
+                    {
+                        id: 502,
+                        title: "Requirements Engineering",
+                        type: "video",
+                        description: "Video tutorial on gathering and documenting system requirements",
+                        url: "#"
+                    },
+                    {
+                        id: 503,
+                        title: "UML Diagrams Guide",
+                        type: "pdf",
+                        description: "Complete reference for UML diagrams in systems analysis",
+                        url: "#"
+                    },
+                    {
+                        id: 504,
+                        title: "Case Study: Hospital Management System",
+                        type: "pdf",
+                        description: "Practical case study applying systems analysis techniques",
+                        url: "#"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                name: "Web Programming",
+                description: "Development of web applications using various programming languages and frameworks",
+                materials: [
+                    {
+                        id: 601,
+                        title: "HTML5 & CSS3 Essentials",
+                        type: "pdf",
+                        description: "Comprehensive guide to modern HTML5 and CSS3 techniques",
+                        url: "#"
+                    },
+                    {
+                        id: 602,
+                        title: "JavaScript Programming Tutorial",
+                        type: "video",
+                        description: "Series of video tutorials covering JavaScript fundamentals",
+                        url: "shefo.mkv"
+                    },
+                    {
+                        id: 603,
+                        title: "Backend Development with Node.js",
+                        type: "pdf",
+                        description: "Guide to server-side web programming using Node.js",
+                        url: "null.pdf"
+                    },
+                    {
+                        id: 604,
+                        title: "Responsive Web Design Workshop",
+                        type: "video",
+                        description: "Hands-on tutorial for creating responsive websites",
+                        url: "#"
+                    }
+                ]
+            }
+        ];
+
+        // DOM Elements
+        const subjectsView = document.getElementById('subjectsView');
+        const materialsView = document.getElementById('materialsView');
+        const subjectsList = document.getElementById('subjectsList');
+        const materialsList = document.getElementById('materialsList');
+        const selectedSubjectTitle = document.getElementById('selectedSubject');
+        const backToSubjectsBtn = document.getElementById('backToSubjects');
+        const searchInput = document.getElementById('searchInput');
+        const modal = document.getElementById('viewerModal');
+        const closeModal = document.getElementById('closeModal');
+        const viewerContainer = document.getElementById('viewerContainer');
+
+        // Render subject cards
+        function renderSubjects(subjectsToRender = subjects) {
+            subjectsList.innerHTML = '';
+            
+            subjectsToRender.forEach(subject => {
+                const subjectCard = document.createElement('div');
+                subjectCard.className = 'subject-card';
+                subjectCard.dataset.id = subject.id;
+                
+                subjectCard.innerHTML = `
+                    <div class="subject-header">
+                        <h2>${subject.name}</h2>
+                    </div>
+                    <div class="subject-content">
+                        <p>${subject.description}</p>
+                        <p>Available Materials: ${subject.materials.length}</p>
+                        <a href="#" class="view-materials">View Materials</a>
+                    </div>
+                `;
+                
+                subjectsList.appendChild(subjectCard);
+                
+                // Add event listener to view materials button
+                const viewMaterialsBtn = subjectCard.querySelector('.view-materials');
+                viewMaterialsBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showMaterials(subject.id);
+                });
+                
+                // Make the entire card clickable
+                subjectCard.addEventListener('click', function(e) {
+                    // Only trigger if we didn't click the button itself
+                    if (!e.target.classList.contains('view-materials')) {
+                        showMaterials(subject.id);
+                    }
+                });
+            });
+        }
+
+        // Show materials for a specific subject
+        function showMaterials(subjectId) {
+            const subject = subjects.find(s => s.id === subjectId);
+            
+            if (subject) {
+                selectedSubjectTitle.textContent = `${subject.name} - Course Materials`;
+                renderMaterials(subject.materials);
+                
+                // Switch views
+                subjectsView.style.display = 'none';
+                materialsView.style.display = 'block';
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+            }
+        }
+
+        // Render materials list
+        function renderMaterials(materials) {
+            materialsList.innerHTML = '';
+            
+            materials.forEach(material => {
+                const materialCard = document.createElement('div');
+                materialCard.className = 'material-card';
+                
+                materialCard.innerHTML = `
+                    <div class="material-title">${material.title}</div>
+                    <span class="material-type type-${material.type}">${material.type.toUpperCase()}</span>
+                    <div class="material-desc">${material.description}</div>
+                    <div class="material-actions">
+                        <a href="#" class="action-view" data-id="${material.id}" data-type="${material.type}">View</a>
+                        <a href="#" class="action-download" data-id="${material.id}">Download</a>
+                    </div>
+                `;
+                
+                materialsList.appendChild(materialCard);
+                
+                // Add event listener to view button
+                const viewBtn = materialCard.querySelector('.action-view');
+                viewBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    openViewer(material);
+                });
+                
+                // Add event listener to download button
+                const downloadBtn = materialCard.querySelector('.action-download');
+                downloadBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (material.url && material.url !== "#") {
+                        // Create a download link and click it
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = material.url;
+                        downloadLink.download = material.url.split('/').pop(); // Extract filename
+                        document.body.appendChild(downloadLink);
+                        downloadLink.click();
+                        document.body.removeChild(downloadLink);
+                    } else {
+                        // For demonstration purposes when no URL is available
+                        alert(`Downloading: ${material.title}`);
+                    }
+                });
+            });
+        }
+
+        // Open the viewer modal
+        function openViewer(material) {
+            viewerContainer.innerHTML = '';
+            
+            if (material.type === 'pdf') {
+                // Use the actual PDF URL if available, otherwise use placeholder
+                const pdfSource = material.url && material.url !== "#" ? 
+                    material.url : "/api/placeholder/900/600";
+                    
+                viewerContainer.innerHTML = `
+                    <iframe class="pdf-viewer" src="${pdfSource}" alt="PDF Viewer"></iframe>
+                `;
+            } else if (material.type === 'video') {
+                // Use the actual video URL if available
+                if (material.url && material.url !== "#") {
+                    viewerContainer.innerHTML = `
+                        <video class="video-player" controls>
+                            <source src="${material.url}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    `;
+                } else {
+                    // Fallback to placeholder
+                    viewerContainer.innerHTML = `
+                        <img class="video-player" src="/api/placeholder/900/600" alt="Video Player">
+                    `;
+                }
+            }
+            
+            modal.style.display = 'block';
+        }
+
+        // Event Listeners
+        backToSubjectsBtn.addEventListener('click', function() {
+            subjectsView.style.display = 'block';
+            materialsView.style.display = 'none';
+        });
+
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+
+        // Close modal if user clicks outside
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Search functionality
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            if (searchTerm.trim() === '') {
+                // If search is empty, show all subjects
+                renderSubjects();
+                return;
+            }
+            
+            // Filter subjects based on search term
+            const filteredSubjects = subjects.filter(subject => {
+                // Check if subject name or description matches
+                if (subject.name.toLowerCase().includes(searchTerm) || 
+                    subject.description.toLowerCase().includes(searchTerm)) {
+                    return true;
+                }
+                
+                // Check if any material titles or descriptions match
+                return subject.materials.some(material => 
+                    material.title.toLowerCase().includes(searchTerm) || 
+                    material.description.toLowerCase().includes(searchTerm)
+                );
+            });
+            
+            renderSubjects(filteredSubjects);
+        });
+
+        // Initialize the app
+        renderSubjects();
+    </script>
+</body>
+</html>

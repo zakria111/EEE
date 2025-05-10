@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment Submission System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --gray-color: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f4f7f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #f0f0f0;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        main {
+            min-height: calc(100vh - 140px);
+            padding: 2rem 0;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+        
+        .btn-warning:hover {
+            background-color: #e67e22;
+        }
+        
+        .tab-container {
+            margin-bottom: 1.5rem;
+        }
+        
+        .tabs {
+            display: flex;
+            list-style: none;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab-item {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        
+        .tab-item.active {
+            border-bottom: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 1.5rem 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .assignment-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .assignment-item:last-child {
+            border-bottom: none;
+        }
+        
+        .assignment-title {
+            font-weight: 500;
+        }
+        
+        .assignment-meta {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        .assignment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        .badge-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+        }
+        
+        .badge-warning {
+            background-color: rgba(243, 156, 18, 0.2);
+            color: #e67e22;
+        }
+        
+        .badge-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+        }
+        
+        .file-upload {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .file-upload-content {
+            text-align: center;
+        }
+        
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--gray-color);
+            margin-bottom: 1rem;
+        }
+        
+        .login-container {
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-color);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+        
+        .alert-danger {
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+        
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                background-color: var(--primary-color);
+                padding: 1rem 0;
+                box-shadow: 0 5px 5px rgba(0, 0, 0, 0.1);
+            }
+            
+            .nav-links.show {
+                display: flex;
+            }
+            
+            .nav-links li {
+                margin: 0;
+                padding: 0.5rem 1rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .assignment-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .assignment-actions {
+                align-self: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">AssignmentHub</div>
+                <button class="mobile-menu-btn" id="menuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#" class="login-link" data-role="student">Student Login</a></li>
+                    <li><a href="#" class="login-link" data-role="instructor">Instructor Login</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div id="welcomePage" class="active-page">
+                <div class="card">
+                    <h1>Welcome to AssignmentHub</h1>
+                    <p>A comprehensive assignment submission system for instructors and students.</p>
+                    <div class="form-group" style="margin-top: 2rem;">
+                        <button class="login-link" data-role="student">Student Login</button>
+                        <button class="login-link" data-role="instructor" style="margin-left: 1rem; background-color: var(--secondary-color);">Instructor Login</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Login Page -->
+            <div id="loginPage" class="page" style="display: none;">
+                <div class="login-container">
+                    <div class="card">
+                        <h2 id="loginTitle">Login</h2>
+                        <div class="alert alert-success" id="loginMessage" style="display: none;"></div>
+                        
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="Enter your email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" placeholder="Enter your password" required>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" id="loginBtn">Login</button>
+                            </div>
+                            <p>Don't have an account? <a href="#" id="signupLink">Sign up</a></p>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Instructor Dashboard -->
+            <div id="instructorDashboard" class="page" style="display: none;">
+                <h1>Instructor Dashboard</h1>
+                <p>Welcome, <span id="instructorName">Professor</span>!</p>
+                
+                <div class="tab-container">
+                    <ul class="tabs">
+                        <li class="tab-item active" data-tab="assignments">Assignments</li>
+                        <li class="tab-item" data-tab="submissions">Submissions</li>
+                        <li class="tab-item" data-tab="students">Students</li>
+                    </ul>
+                    
+                    <!-- Assignments Tab -->
+                    <div id="assignments" class="tab-content active">
+                        <div class="card">
+                            <div class="form-group">
+                                <button id="createAssignmentBtn">Create New Assignment</button>
+                            </div>
+                            
+                            <div id="assignmentsList">
+                                <!-- Assignment items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submissions Tab -->
+                    <div id="submissions" class="tab-content">
+                        <div class="card">
+                            <div class="form-group">
+                                <label for="assignmentFilter">Filter by Assignment</label>
+                                <select id="assignmentFilter">
+                                    <option value="">All Assignments</option>
+                                    <!-- Assignment options will be populated here -->
+                                </select>
+                            </div>
+                            
+                            <div id="submissionsList">
+                                <!-- Submission items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Students Tab -->
+                    <div id="students" class="tab-content">
+                        <div class="card">
+                            <div id="studentsList">
+                                <!-- Student items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Student Dashboard -->
+            <div id="studentDashboard" class="page" style="display: none;">
+                <h1>Student Dashboard</h1>
+                <p>Welcome, <span id="studentName">Student</span>!</p>
+                
+                <div class="tab-container">
+                    <ul class="tabs">
+                        <li class="tab-item active" data-tab="student-assignments">My Assignments</li>
+                        <li class="tab-item" data-tab="student-submissions">My Submissions</li>
+                    </ul>
+                    
+                    <!-- Assignments Tab -->
+                    <div id="student-assignments" class="tab-content active">
+                        <div class="card">
+                            <div id="studentAssignmentsList">
+                                <!-- Assignment items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Submissions Tab -->
+                    <div id="student-submissions" class="tab-content">
+                        <div class="card">
+                            <div id="studentSubmissionsList">
+                                <!-- Submission items will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 AssignmentHub. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Create Assignment Modal -->
+    <div id="createAssignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Assignment</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createAssignmentForm">
+                    <div class="form-group">
+                        <label for="assignmentTitle">Title</label>
+                        <input type="text" id="assignmentTitle" placeholder="Enter assignment title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="assignmentDescription">Description</label>
+                        <textarea id="assignmentDescription" rows="4" placeholder="Enter assignment description" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="dueDate">Due Date</label>
+                        <input type="datetime-local" id="dueDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="maxPoints">Maximum Points</label>
+                        <input type="number" id="maxPoints" min="1" value="100" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger modal-close">Cancel</button>
+                <button class="btn-success" id="saveAssignmentBtn">Create Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Assignment Modal -->
+    <div id="viewAssignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewAssignmentTitle">Assignment Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="viewAssignmentDetails"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submit Assignment Modal -->
+    <div id="submitAssignmentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="submitAssignmentTitle">Submit Assignment</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="submitAssignmentForm">
+                    <div class="form-group">
+                        <label for="submissionComment">Comment (Optional)</label>
+                        <textarea id="submissionComment" rows="3" placeholder="Add a comment to your submission"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Assignment Files</label>
+                        <div class="file-upload" id="fileUploadArea">
+                            <div class="file-upload-content">
+                                <div class="file-upload-icon">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                </div>
+                                <p>Drag and drop files here or click to browse</p>
+                                <input type="file" id="submissionFiles" multiple style="display: none;">
+                            </div>
+                        </div>
+                        <div id="filesList" style="margin-top: 1rem;"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger modal-close">Cancel</button>
+                <button class="btn-success" id="saveSubmissionBtn">Submit Assignment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Submission Modal -->
+    <div id="viewSubmissionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="viewSubmissionTitle">Submission Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="viewSubmissionDetails"></div>
+            </div>
+            <div class="modal-footer" id="viewSubmissionFooter">
+                <button class="modal-close">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const users = [
+            { id: 1, name: "John Smith", email: "amina@gmail", password: "password", role: "instructor" },
+            { id: 2, name: "Jane Doe", email: "zak@gmail", password: "password", role: "student" },
+            { id: 3, name: "Alice Johnson", email: "student2@example.com", password: "password", role: "student" }
+        ];
+        
+        let assignments = [
+            { 
+                id: 1, 
+                title: "Research Paper", 
+                description: "Write a 5-page research paper on a topic of your choice related to the course material.", 
+                dueDate: "2025-05-15T23:59", 
+                maxPoints: 100, 
+                createdBy: 1 
+            },
+            { 
+                id: 2, 
+                title: "Group Project", 
+                description: "Work in groups of 3-4 to create a presentation on the assigned topic.", 
+                dueDate: "2025-05-22T23:59", 
+                maxPoints: 150, 
+                createdBy: 1 
+            }
+        ];
+        
+        let submissions = [
+            { 
+                id: 1, 
+                assignmentId: 1, 
+                studentId: 2, 
+                comment: "Here's my research paper on AI ethics.", 
+                files: ["research_paper.pdf"], 
+                submittedAt: "2025-05-10T14:30:00", 
+                grade: null, 
+                feedback: null 
+            },
+            { 
+                id: 2, 
+                assignmentId: 2, 
+                studentId: 2, 
+                comment: "Our group's presentation on renewable energy.", 
+                files: ["presentation.pptx", "notes.pdf"], 
+                submittedAt: "2025-05-18T16:45:00", 
+                grade: 135, 
+                feedback: "Excellent work! Very comprehensive analysis." 
+            }
+        ];
+        
+        // Current user
+        let currentUser = null;
+        
+        // DOM Elements
+        const welcomePage = document.getElementById('welcomePage');
+        const loginPage = document.getElementById('loginPage');
+        const instructorDashboard = document.getElementById('instructorDashboard');
+        const studentDashboard = document.getElementById('studentDashboard');
+        const loginTitle = document.getElementById('loginTitle');
+        const loginForm = document.getElementById('loginForm');
+        const loginMessage = document.getElementById('loginMessage');
+        const instructorName = document.getElementById('instructorName');
+        const studentName = document.getElementById('studentName');
+        const menuBtn = document.getElementById('menuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const assignmentsList = document.getElementById('assignmentsList');
+        const studentAssignmentsList = document.getElementById('studentAssignmentsList');
+        const submissionsList = document.getElementById('submissionsList');
+        const studentSubmissionsList = document.getElementById('studentSubmissionsList');
+        const studentsList = document.getElementById('studentsList');
+        const createAssignmentBtn = document.getElementById('createAssignmentBtn');
+        const createAssignmentModal = document.getElementById('createAssignmentModal');
+        const createAssignmentForm = document.getElementById('createAssignmentForm');
+        const saveAssignmentBtn = document.getElementById('saveAssignmentBtn');
+        const viewAssignmentModal = document.getElementById('viewAssignmentModal');
+        const submitAssignmentModal = document.getElementById('submitAssignmentModal');
+        const submitAssignmentForm = document.getElementById('submitAssignmentForm');
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const submissionFiles = document.getElementById('submissionFiles');
+        const filesList = document.getElementById('filesList');
+        const saveSubmissionBtn = document.getElementById('saveSubmissionBtn');
+        const viewSubmissionModal = document.getElementById('viewSubmissionModal');
+        
+        // Event Listeners
+        document.querySelectorAll('.login-link').forEach(link => {
+            link.addEventListener('click', () => {
+                const role = link.getAttribute('data-role');
+                showLoginPage(role);
+            });
+        });
+        
+        document.getElementById('signupLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Sign up functionality would be implemented here.');
+        });
+        
+        menuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('show');
+        });
+        
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const user = users.find(user => user.email === email && user.password === password);
+            
+            if (user) {
+                currentUser = user;
+                loginMessage.textContent = 'Login successful!';
+                loginMessage.style.display = 'block';
+                
+                // Redirect to appropriate dashboard after a short delay
+                setTimeout(() => {
+                    if (user.role === 'instructor') {
+                        showInstructorDashboard();
+                    } else {
+                        showStudentDashboard();
+                    }
+                }, 1000);
+            } else {
+                loginMessage.textContent = 'Invalid email or password.';
+                loginMessage.className = 'alert alert-danger';
+                loginMessage.style.display = 'block';
+            }
+        });
+        
+        // Tab functionality
+        document.querySelectorAll('.tab-item').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                
+                // Remove active class from all tabs and content
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding content
+                tab.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Modal close buttons
+        document.querySelectorAll('.modal-close').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('show');
+                });
+            });
+        });
+        
+        // Create Assignment Button
+        createAssignmentBtn.addEventListener('click', () => {
+            createAssignmentModal.classList.add('show');
+        });
+        
+        // Save Assignment Button
+        saveAssignmentBtn.addEventListener('click', () => {
+            const title = document.getElementById('assignmentTitle').value;
+            const description = document.getElementById('assignmentDescription').value;
+            const dueDate = document.getElementById('dueDate').value;
+            const maxPoints = document.getElementById('maxPoints').value;
+            
+            if (title && description && dueDate && maxPoints) {
+                const newAssignment = {
+                    id: assignments.length + 1,
+                    title,
+                    description,
+                    dueDate,
+                    maxPoints: parseInt(maxPoints),
+                    createdBy: currentUser.id
+                };
+                
+                assignments.push(newAssignment);
+                createAssignmentModal.classList.remove('show');
+                createAssignmentForm.reset();
+                
+                updateAssignmentsList();
+                updateStudentAssignmentsList();
+                
+                // Show success message
+                alert('Assignment created successfully!');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        });
+        
+        // File Upload Area
+        fileUploadArea.addEventListener('click', () => {
+            submissionFiles.click();
+        });
+        
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = 'var(--primary-color)';
+            fileUploadArea.style.backgroundColor = 'rgba(52, 152, 219, 0.1)';
+        });
+        
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.style.borderColor = '#ddd';
+            fileUploadArea.style.backgroundColor = 'transparent';
+        });
+        
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.style.borderColor = '#ddd';
+            fileUploadArea.style.backgroundColor = 'transparent';
+            
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        });
+        
+        submissionFiles.addEventListener('change', () => {
+            handleFiles(submissionFiles.files);
+        });
+        
+        // Save Submission Button
+        saveSubmissionBtn.addEventListener('click', () => {
+            const comment = document.getElementById('submissionComment').value;
+            const assignmentId = parseInt(submitAssignmentModal.getAttribute('data-assignment-id'));
+            
+            // Get file names
+            const fileItems = document.querySelectorAll('.file-item');
+            const files = Array.from(fileItems).map(item => item.textContent);
+            
+            if (files.length > 0) {
+                const newSubmission = {
+                    id: submissions.length + 1,
+                    assignmentId,
+                    studentId: currentUser.id,
+                    comment,
+                    files,
+                    submittedAt: new Date().toISOString(),
+                    grade: null,
+                    feedback: null
+                };
+                
+                submissions.push(newSubmission);
+                submitAssignmentModal.classList.remove('show');
+                submitAssignmentForm.reset();
+                filesList.innerHTML = '';
+                
+                updateStudentAssignmentsList();
+                updateStudentSubmissionsList();
+                
+                // Show success message
+                alert('Assignment submitted successfully!');
+            } else {
+                alert('Please upload at least one file.');
+            }
+        });
+        
+        // Functions
+        function showPage(pageId) {
+            // Hide all pages
+            welcomePage.style.display = 'none';
+            loginPage.style.display = 'none';
+            instructorDashboard.style.display = 'none';
+            studentDashboard.style.display = 'none';
+            
+            // Show selected page
+            document.getElementById(pageId).style.display = 'block';
+        }
+        
+        function showLoginPage(role) {
+            showPage('loginPage');
+            loginTitle.textContent = role === 'instructor' ? 'Instructor Login' : 'Student Login';
+            loginForm.setAttribute('data-role', role);
+            loginMessage.style.display = 'none';
+            loginMessage.className = 'alert alert-success';
+            document.getElementById('email').value = '';
+            document.getElementById('password').value = '';
+        }
+        
+        function showInstructorDashboard() {
+            showPage('instructorDashboard');
+            instructorName.textContent = currentUser.name;
+            updateAssignmentsList();
+            updateSubmissionsList();
+            updateStudentsList();
+        }
+        
+        function showStudentDashboard() {
+            showPage('studentDashboard');
+            studentName.textContent = currentUser.name;
+            updateStudentAssignmentsList();
+            updateStudentSubmissionsList();
+        }
+        
+        function updateAssignmentsList() {
+            assignmentsList.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                assignmentsList.innerHTML = '<p>No assignments created yet.</p>';
+                return;
+            }
+            
+            assignments.forEach(assignment => {
+                const dueDate = new Date(assignment.dueDate);
+                const now = new Date();
+                let statusClass = 'badge-success';
+                let statusText = 'Open';
+                
+                if (dueDate < now) {
+                    statusClass = 'badge-danger';
+                    statusText = 'Closed';
+                } else if (dueDate - now < 7 * 24 * 60 * 60 * 1000) { // Within a week
+                    statusClass = 'badge-warning';
+                    statusText = 'Due Soon';
+                }
+                
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                assignmentItem.innerHTML = `
+                    <div>
+                        <div class="assignment-title">${assignment.title}</div>
+                        <div class="assignment-meta">Due: ${formatDate(assignment.dueDate)} | Max Points: ${assignment.maxPoints}</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <span class="badge ${statusClass}">${statusText}</span>
+                        <button class="btn-warning view-assignment" data-id="${assignment.id}">View</button>
+                        <button class="btn-danger delete-assignment" data-id="${assignment.id}">Delete</button>
+                    </div>
+                `;
+                
+                assignmentsList.appendChild(assignmentItem);
+            });
+            
+            // Attach event listeners
+            document.querySelectorAll('.view-assignment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const assignmentId = parseInt(btn.getAttribute('data-id'));
+                    viewAssignment(assignmentId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-assignment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const assignmentId = parseInt(btn.getAttribute('data-id'));
+                    deleteAssignment(assignmentId);
+                });
+            });
+        }
+        
+        function updateStudentAssignmentsList() {
+            studentAssignmentsList.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                studentAssignmentsList.innerHTML = '<p>No assignments available.</p>';
+                return;
+            }
+            
+            assignments.forEach(assignment => {
+                const dueDate = new Date(assignment.dueDate);
+                const now = new Date();
+                let statusClass = 'badge-success';
+                let statusText = 'Open';
+                
+                if (dueDate < now) {
+                    statusClass = 'badge-danger';
+                    statusText = 'Closed';
+                } else if (dueDate - now < 7 * 24 * 60 * 60 * 1000) { // Within a week
+                    statusClass = 'badge-warning';
+                    statusText = 'Due Soon';
+                }
+                
+                // Check if student has already submitted
+                const hasSubmitted = submissions.some(sub => 
+                    sub.assignmentId === assignment.id && sub.studentId === currentUser.id
+                );
+                
+                const submitButton = hasSubmitted
+                    ? `<button class="btn-success" disabled>Submitted</button>`
+                    : statusText === 'Closed'
+                        ? `<button class="btn-danger" disabled>Closed</button>`
+                        : `<button class="btn-primary submit-assignment" data-id="${assignment.id}">Submit</button>`;
+                
+                const assignmentItem = document.createElement('div');
+                assignmentItem.className = 'assignment-item';
+                assignmentItem.innerHTML = `
+                    <div>
+                        <div class="assignment-title">${assignment.title}</div>
+                        <div class="assignment-meta">Due: ${formatDate(assignment.dueDate)} | Max Points: ${assignment.maxPoints}</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <span class="badge ${statusClass}">${statusText}</span>
+                        <button class="btn-warning view-assignment" data-id="${assignment.id}">View</button>
+                        ${submitButton}
+                    </div>
+                `;
+                
+                studentAssignmentsList.appendChild(assignmentItem);
+            });
+            
+            // Attach event listeners
+            document.querySelectorAll('.view-assignment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const assignmentId = parseInt(btn.getAttribute('data-id'));
+                    viewAssignment(assignmentId);
+                });
+            });
+            
+            document.querySelectorAll('.submit-assignment').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const assignmentId = parseInt(btn.getAttribute('data-id'));
+                    showSubmitAssignmentModal(assignmentId);
+                });
+            });
+        }
+        
+        function updateSubmissionsList() {
+            submissionsList.innerHTML = '';
+            
+            if (submissions.length === 0) {
+                submissionsList.innerHTML = '<p>No submissions received yet.</p>';
+                return;
+            }
+            
+            submissions.forEach(submission => {
+                const assignment = assignments.find(a => a.id === submission.assignmentId);
+                const student = users.find(u => u.id === submission.studentId);
+                
+                if (!assignment || !student) return;
+                
+                const submissionItem = document.createElement('div');
+                submissionItem.className = 'assignment-item';
+                submissionItem.innerHTML = `
+                    <div>
+                        <div class="assignment-title">${assignment.title} - ${student.name}</div>
+                        <div class="assignment-meta">Submitted: ${formatDate(submission.submittedAt)} | Files: ${submission.files.length}</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <span class="badge ${submission.grade ? 'badge-success' : 'badge-warning'}">${submission.grade ? 'Graded' : 'Ungraded'}</span>
+                        <button class="btn-warning view-submission" data-id="${submission.id}">View</button>
+                    </div>
+                `;
+                
+                submissionsList.appendChild(submissionItem);
+            });
+            
+            // Attach event listeners
+            document.querySelectorAll('.view-submission').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const submissionId = parseInt(btn.getAttribute('data-id'));
+                    viewSubmission(submissionId, 'instructor');
+                });
+            });
+        }
+        
+        function updateStudentSubmissionsList() {
+            studentSubmissionsList.innerHTML = '';
+            
+            const studentSubmissions = submissions.filter(sub => sub.studentId === currentUser.id);
+            
+            if (studentSubmissions.length === 0) {
+                studentSubmissionsList.innerHTML = '<p>You haven\'t submitted any assignments yet.</p>';
+                return;
+            }
+            
+            studentSubmissions.forEach(submission => {
+                const assignment = assignments.find(a => a.id === submission.assignmentId);
+                
+                if (!assignment) return;
+                
+                const submissionItem = document.createElement('div');
+                submissionItem.className = 'assignment-item';
+                submissionItem.innerHTML = `
+                    <div>
+                        <div class="assignment-title">${assignment.title}</div>
+                        <div class="assignment-meta">Submitted: ${formatDate(submission.submittedAt)} | Files: ${submission.files.length}</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <span class="badge ${submission.grade ? 'badge-success' : 'badge-warning'}">${submission.grade ? `Grade: ${submission.grade}/${assignment.maxPoints}` : 'Awaiting Grade'}</span>
+                        <button class="btn-warning view-submission" data-id="${submission.id}">View</button>
+                    </div>
+                `;
+                
+                studentSubmissionsList.appendChild(submissionItem);
+            });
+            
+            // Attach event listeners
+            document.querySelectorAll('.view-submission').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const submissionId = parseInt(btn.getAttribute('data-id'));
+                    viewSubmission(submissionId, 'student');
+                });
+            });
+        }
+        
+        function updateStudentsList() {
+            studentsList.innerHTML = '';
+            
+            const students = users.filter(user => user.role === 'student');
+            
+            if (students.length === 0) {
+                studentsList.innerHTML = '<p>No students registered yet.</p>';
+                return;
+            }
+            
+            students.forEach(student => {
+                const studentSubmissions = submissions.filter(sub => sub.studentId === student.id);
+                const submissionCount = studentSubmissions.length;
+                const gradedCount = studentSubmissions.filter(sub => sub.grade !== null).length;
+                
+                const studentItem = document.createElement('div');
+                studentItem.className = 'assignment-item';
+                studentItem.innerHTML = `
+                    <div>
+                        <div class="assignment-title">${student.name}</div>
+                        <div class="assignment-meta">${student.email}</div>
+                    </div>
+                    <div class="assignment-actions">
+                        <span class="badge badge-success">${submissionCount} Submissions</span>
+                        <span class="badge ${gradedCount === submissionCount ? 'badge-success' : 'badge-warning'}">${gradedCount}/${submissionCount} Graded</span>
+                    </div>
+                `;
+                
+                studentsList.appendChild(studentItem);
+            });
+        }
+        
+        function viewAssignment(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            
+            if (!assignment) return;
+            
+            const viewAssignmentTitle = document.getElementById('viewAssignmentTitle');
+            const viewAssignmentDetails = document.getElementById('viewAssignmentDetails');
+            
+            viewAssignmentTitle.textContent = assignment.title;
+            viewAssignmentDetails.innerHTML = `
+                <h4>Description</h4>
+                <p>${assignment.description}</p>
+                <h4>Due Date</h4>
+                <p>${formatDate(assignment.dueDate)}</p>
+                <h4>Maximum Points</h4>
+                <p>${assignment.maxPoints}</p>
+            `;
+            
+            // Show student submissions if instructor
+            if (currentUser.role === 'instructor') {
+                const assignmentSubmissions = submissions.filter(sub => sub.assignmentId === assignmentId);
+                
+                if (assignmentSubmissions.length > 0) {
+                    let submissionsHtml = '<h4>Submissions</h4><ul>';
+                    
+                    assignmentSubmissions.forEach(sub => {
+                        const student = users.find(u => u.id === sub.studentId);
+                        submissionsHtml += `
+                            <li>
+                                ${student ? student.name : 'Unknown Student'} - 
+                                Submitted: ${formatDate(sub.submittedAt)} - 
+                                Status: ${sub.grade ? `Graded (${sub.grade}/${assignment.maxPoints})` : 'Ungraded'}
+                                <button class="btn-warning view-submission" data-id="${sub.id}">View</button>
+                            </li>
+                        `;
+                    });
+                    
+                    submissionsHtml += '</ul>';
+                    viewAssignmentDetails.innerHTML += submissionsHtml;
+                    
+                    // Attach event listeners
+                    document.querySelectorAll('.view-submission').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            viewAssignmentModal.classList.remove('show');
+                            const submissionId = parseInt(btn.getAttribute('data-id'));
+                            viewSubmission(submissionId, 'instructor');
+                        });
+                    });
+                } else {
+                    viewAssignmentDetails.innerHTML += '<h4>Submissions</h4><p>No submissions yet.</p>';
+                }
+            }
+            
+            viewAssignmentModal.classList.add('show');
+        }
+        
+        function deleteAssignment(assignmentId) {
+            if (confirm('Are you sure you want to delete this assignment? This action cannot be undone.')) {
+                // Remove the assignment
+                assignments = assignments.filter(a => a.id !== assignmentId);
+                
+                // Remove all submissions for this assignment
+                submissions = submissions.filter(s => s.assignmentId !== assignmentId);
+                
+                updateAssignmentsList();
+                updateSubmissionsList();
+                updateStudentsList();
+                
+                alert('Assignment deleted successfully.');
+            }
+        }
+        
+        function showSubmitAssignmentModal(assignmentId) {
+            const assignment = assignments.find(a => a.id === assignmentId);
+            
+            if (!assignment) return;
+            
+            document.getElementById('submitAssignmentTitle').textContent = `Submit: ${assignment.title}`;
+            submitAssignmentModal.setAttribute('data-assignment-id', assignmentId);
+            document.getElementById('submissionComment').value = '';
+            filesList.innerHTML = '';
+            
+            submitAssignmentModal.classList.add('show');
+        }
+        
+        function handleFiles(files) {
+            filesList.innerHTML = '';
+            
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <i class="fas fa-file"></i> ${file.name}
+                    <button class="btn-danger btn-sm remove-file"><i class="fas fa-times"></i></button>
+                `;
+                filesList.appendChild(fileItem);
+                
+                // Remove file button
+                fileItem.querySelector('.remove-file').addEventListener('click', () => {
+                    fileItem.remove();
+                });
+            }
+        }
+        
+        function viewSubmission(submissionId, viewerRole) {
+            const submission = submissions.find(s => s.id === submissionId);
+            
+            if (!submission) return;
+            
+            const assignment = assignments.find(a => a.id === submission.assignmentId);
+            const student = users.find(u => u.id === submission.studentId);
+            
+            if (!assignment || !student) return;
+            
+            const viewSubmissionTitle = document.getElementById('viewSubmissionTitle');
+            const viewSubmissionDetails = document.getElementById('viewSubmissionDetails');
+            const viewSubmissionFooter = document.getElementById('viewSubmissionFooter');
+            
+            viewSubmissionTitle.textContent = `${assignment.title} - Submission`;
+            
+            let filesHtml = '<ul>';
+            submission.files.forEach(file => {
+                filesHtml += `<li><i class="fas fa-file"></i> ${file}</li>`;
+            });
+            filesHtml += '</ul>';
+            
+            viewSubmissionDetails.innerHTML = `
+                <h4>Student</h4>
+                <p>${student.name} (${student.email})</p>
+                <h4>Submitted</h4>
+                <p>${formatDate(submission.submittedAt)}</p>
+                <h4>Files</h4>
+                ${filesHtml}
+            `;
+            
+            if (submission.comment) {
+                viewSubmissionDetails.innerHTML += `
+                    <h4>Comment</h4>
+                    <p>${submission.comment}</p>
+                `;
+            }
+            
+            if (submission.grade !== null) {
+                viewSubmissionDetails.innerHTML += `
+                    <h4>Grade</h4>
+                    <p>${submission.grade}/${assignment.maxPoints}</p>
+                `;
+                
+                if (submission.feedback) {
+                    viewSubmissionDetails.innerHTML += `
+                        <h4>Feedback</h4>
+                        <p>${submission.feedback}</p>
+                    `;
+                }
+            }
+            
+            // Show grade form for instructors if not graded
+            if (viewerRole === 'instructor' && submission.grade === null) {
+                viewSubmissionFooter.innerHTML = `
+                    <div style="display: flex; align-items: center; margin-right: auto;">
+                        <input type="number" id="gradeInput" min="0" max="${assignment.maxPoints}" placeholder="Grade" style="width: 80px; margin-right: 10px;">
+                        <textarea id="feedbackInput" placeholder="Feedback" style="width: 200px; height: 36px;"></textarea>
+                    </div>
+                    <button class="btn-success" id="saveGradeBtn" data-id="${submission.id}">Save Grade</button>
+                    <button class="modal-close">Close</button>
+                `;
+                
+                // Attach event listener for save grade
+                document.getElementById('saveGradeBtn').addEventListener('click', () => {
+                    const grade = parseInt(document.getElementById('gradeInput').value);
+                    const feedback = document.getElementById('feedbackInput').value;
+                    
+                    if (isNaN(grade) || grade < 0 || grade > assignment.maxPoints) {
+                        alert(`Please enter a valid grade between 0 and ${assignment.maxPoints}.`);
+                        return;
+                    }
+                    
+                    // Update submission
+                    submission.grade = grade;
+                    submission.feedback = feedback;
+                    
+                    viewSubmissionModal.classList.remove('show');
+                    updateSubmissionsList();
+                    updateStudentsList();
+                    
+                    alert('Grade saved successfully.');
+                });
+            } else {
+                viewSubmissionFooter.innerHTML = `<button class="modal-close">Close</button>`;
+            }
+            
+            viewSubmissionModal.classList.add('show');
+        }
+        
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return `${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set current date + 2 weeks as default due date for assignments
+            const defaultDueDate = new Date();
+            defaultDueDate.setDate(defaultDueDate.getDate() + 14);
+            
+            const formattedDefaultDate = defaultDueDate.toISOString().slice(0, 16);
+            document.getElementById('dueDate').value = formattedDefaultDate;
+            
+            // Update the lists
+            updateAssignmentsList();
+            updateSubmissionsList();
+            updateStudentsList();
+        });
+    </script>
+</body>
+</html>

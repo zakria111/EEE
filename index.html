@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance App</title>
+   <link rel="stylesheet" href="style.css">
+   <link rel="icon" href="/assets/logo.webp">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-title">Attendance Checker </h1>
+            <p class="app-subtitle">Track attendance for your team </p>
+        </header>
+        
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="Search by student name...🧑‍🎓">
+        </div>
+        
+       
+        
+        <div class="cards" id="attendance-cards"></div>
+        
+        <div class="pagination">
+            <button id="prev-page" class="page-btn page-btn-disabled">Previous</button>
+            <div class="page-info">
+                <span>Page</span>
+                <select id="page-select" class="page-select"></select>
+                <span>of <span id="total-pages">1</span></span>
+            </div>
+            <a href="#search-input">   <button id="next-page" class="page-btn">Next</button></a>
+        </div>
+         <div class="summary">
+            <h2 class="summary-title">Attendance Summary</h2>
+            <div class="summary-stats">
+                <div class="stat-item total-stat">
+                    <div class="stat-number" id="total-count">0</div>
+                    <div class="stat-label">Total</div>
+                </div>
+                <div class="stat-item present-stat">
+                    <div class="stat-number" id="present-count">0</div>
+                    <div class="stat-label">Present</div>
+                </div>
+                <div class="stat-item absent-stat">
+                    <div class="stat-number" id="absent-count">0</div>
+                    <div class="stat-label">Absent</div>
+                </div>
+                <div class="stat-item percentage-stat">
+                    <div class="stat-number" id="percentage">0%</div>
+                    <div class="stat-label">Attendance Rate</div>
+                </div>
+            </div>
+        </div>
+        <div class="status-history">
+            <h2 class="history-title">Recent Activity</h2>
+            <ul class="history-list" id="history-list"></ul>
+        </div>
+        
+        <button class="export-btn" id="export-btn">Export Attendance</button>
+    </div>
+    
+    <div class="flash-message" id="flash-message"></div>
+
+    <script src="main.js">
+ </script>
+</body>
+</html>

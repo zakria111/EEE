@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جدول المحاضرات</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #3e4a5e;
+            --accent-color: #607d8b;
+            --light-bg: #f7f9fc;
+            --border-color: #d1d9e6;
+            --hover-color: #303f9f;
+            --header-bg: #3f51b5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--header-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+            z-index: 1;
+        }
+        
+        .header h1, .header p {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header h1 {
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 15px;
+        }
+
+        .tab-button {
+            padding: 12px 30px;
+            background-color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--secondary-color);
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-button:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .schedule-table.active {
+            display: table;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .schedule-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+            padding: 18px 15px;
+        }
+        
+        .schedule-table thead tr:first-child th {
+            font-size: 1.2rem;
+            padding: 20px 15px;
+            background-color: var(--secondary-color);
+        }
+
+        .schedule-table tr:nth-child(even) {
+            background-color: #fafbfd;
+        }
+
+        .schedule-table tr:hover {
+            background-color: #f0f8ff;
+        }
+
+        .university-activity {
+            background-color: #f4f7ff !important;
+            color: #5c6bc0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .lecture-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 5px;
+        }
+        
+        .lecture-info span:first-child {
+            font-weight: bold;
+            color: #333;
+            font-size: 1rem;
+        }
+
+        .instructor {
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .location {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: bold;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+            padding: 2px 6px;
+            display: inline-block;
+        }
+
+        .lecture-time {
+            font-size: 0.85rem;
+            color: #555;
+            background-color: #eef7ff;
+            padding: 3px 6px;
+            border-radius: 4px;
+            margin-top: 3px;
+        }
+
+        .day-column {
+            background-color: #e8eaf6;
+            font-weight: bold;
+            color: var(--secondary-color);
+            width: 80px;
+        }
+
+        .print-button {
+            padding: 12px 25px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .print-button:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+        }
+        
+        .print-button i {
+            margin-left: 5px;
+        }
+        
+        .watermark {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            opacity: 0.5;
+            font-size: 0.8rem;
+            color: #777;
+        }
+
+        @media (max-width: 768px) {
+            .schedule-table th, .schedule-table td {
+                padding: 10px 5px;
+                font-size: 0.8rem;
+            }
+            
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                padding: 0;
+                background-color: white;
+            }
+            
+            .header {
+                box-shadow: none;
+                background-color: #f0f0f0;
+                color: #333;
+            }
+            
+            .tabs, .class-filters, .print-button, .watermark {
+                display: none;
+            }
+            
+            .schedule-table {
+                display: table;
+                box-shadow: none;
+                margin-bottom: 20px;
+                page-break-inside: avoid;
+            }
+            
+            .schedule-table th {
+                background-color: #e0e0e0 !important;
+                color: black;
+            }
+            
+            .schedule-table thead tr:first-child th {
+                background-color: #d0d0d0 !important;
+            }
+            
+            .university-activity {
+                background-color: #f0f0f0 !important;
+                color: #333;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>جدول المحاضرات الأسبوعي</h1>
+            <p>كلية الحاسبات والمعلومات - الفصل الدراسي الثاني 2024/2025</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-button active" onclick="showTab('second-year')">الفرقة الثانية</button>
+            <button class="tab-button" onclick="showTab('third-year')">الفرقة الثالثة</button>
+        </div>
+        
+        <button class="print-button" onclick="window.print()">
+            <i class="fas fa-print"></i>
+            طباعة الجدول
+        </button>
+        
+        <!-- الفرقة الثانية -->
+        <table class="schedule-table active" id="second-year">
+            <thead>
+                <tr>
+                    <th colspan="5">الفرقة الثانية (198)</th>
+                </tr>
+                <tr>
+                    <th>اليوم</th>
+                    <th>9:00 - 10:30</th>
+                    <th>10:30 - 12:00</th>
+                    <th>12:15 - 1:45</th>
+                    <th>1:45 - 3:15</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- السبت -->
+                <tr>
+                    <td class="day-column">السبت</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>برمجة الويب</span>
+                            <span class="instructor">م/راندا</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>برمجة الويب</span>
+                            <span class="instructor">م/راندا</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>البرمجة الشيئية</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="location">C32</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>البرمجة الشيئية</span>
+                            <span class="instructor">م/محمد</span>
+                            <span class="location">D32</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الأحد -->
+                <tr>
+                    <td class="day-column">الأحد</td>
+                    <td colspan="4" class="university-activity">نشاط جامعي</td>
+                </tr>
+                
+                <!-- الاثنين -->
+                <tr>
+                    <td class="day-column">الاثنين</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>جبر خطي</span>
+                            <span class="instructor">م/نسمة</span>
+                            <span class="location">C31</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>برمجة الويب</span>
+                            <span class="instructor">د/شيماء محمود</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>فيزياء الاتصال</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="instructor">م/مروة سامي</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>فيزياء الاتصال</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="instructor">م/مروة سامي</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الثلاثاء -->
+                <tr>
+                    <td class="day-column">الثلاثاء</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>الجبر الخطي</span>
+                            <span class="instructor">د/سماح محمد</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>هياكل البيانات</span>
+                            <span class="instructor">د/عوض</span>
+                            <span class="instructor">م.م/سارة عوض</span>
+                            <span class="location">C32</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>التفاضل والتكامل</span>
+                            <span class="instructor">د/سماح محمد</span>
+                            <span class="location">C32</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>التفاضل والتكامل</span>
+                            <span class="instructor">د/سماح محمد</span>
+                            <span class="location">C32 SEC</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الأربعاء -->
+                <tr>
+                    <td class="day-column">الأربعاء</td>
+                    <td colspan="4" class="university-activity">نشاط جامعي</td>
+                </tr>
+                
+                <!-- الخميس -->
+                <tr>
+                    <td class="day-column">الخميس</td>
+                    <td colspan="4" class="university-activity">نشاط جامعي</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <!-- الفرقة الثالثة -->
+        <table class="schedule-table" id="third-year">
+            <thead>
+                <tr>
+                    <th colspan="5">الفرقة الثالثة (160)</th>
+                </tr>
+                <tr>
+                    <th>اليوم</th>
+                    <th>9:00 - 10:30</th>
+                    <th>10:30 - 12:00</th>
+                    <th>12:15 - 1:45</th>
+                    <th>1:45 - 3:15</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- السبت -->
+                <tr>
+                    <td class="day-column">السبت</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>معالجة الصور الرقمية</span>
+                            <span class="instructor">د/ايمن محجوب</span>
+                            <span class="location">C23</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>بناء الحاسب</span>
+                            <span class="instructor">د/ايمن العشماوي</span>
+                            <span class="location">مدرج سوريا</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>نظرية نظم التشغيل</span>
+                            <span class="instructor">د/ايمن العشماوى</span>
+                            <span class="location">C42</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>معالجة الصور</span>
+                            <span class="instructor">م/اسماء</span>
+                            <span class="location">C41</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الأحد -->
+                <tr>
+                    <td class="day-column">الأحد</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>الذكاء الاصطناعي</span>
+                            <span class="instructor">د/محمد الشاطبي</span>
+                            <span class="location">C32</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>النظم الخبيرة</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="location">C47</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>أساسيات الوسائط المتعددة</span>
+                            <span class="instructor">د/محمد الشاطبي</span>
+                            <span class="location">C32</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>تحليل النظم</span>
+                            <span class="instructor">م/راندا</span>
+                            <span class="location">D42</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الاثنين -->
+                <tr>
+                    <td class="day-column">الاثنين</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>برمجة الويب</span>
+                            <span class="instructor">د/شيماء محمود</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>برمجة الويب</span>
+                            <span class="instructor">د/شيماء محمود</span>
+                            <span class="location">C21</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>النظم الخبيرة</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="location">C47</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>النظم الخبيرة</span>
+                            <span class="instructor">د/حسين عمران</span>
+                            <span class="location">C47</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الثلاثاء -->
+                <tr>
+                    <td class="day-column">الثلاثاء</td>
+                    <td colspan="4" class="university-activity">نشاط جامعي</td>
+                </tr>
+                
+                <!-- الأربعاء -->
+                <tr>
+                    <td class="day-column">الأربعاء</td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>نظرية وتصميم</span>
+                            <span class="instructor">م/راندا</span>
+                            <span class="location">C22</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>نظرية بناء الخوادم</span>
+                            <span class="instructor">م/نور</span>
+                            <span class="location">C22</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>نظرية وتصميم الخوادم</span>
+                            <span class="instructor">م/نور</span>
+                            <span class="location">C22</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="lecture-info">
+                            <span>الخوارزميات</span>
+                            <span class="instructor">م/نور</span>
+                            <span class="location">C22</span>
+                        </div>
+                    </td>
+                </tr>
+                
+                <!-- الخميس -->
+                <tr>
+                    <td class="day-column">الخميس</td>
+                    <td colspan="4" class="university-activity">نشاط جامعي</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="watermark">كلية الحاسبات والمعلومات © 2025</div>
+
+    <script>
+        // Function to switch between tabs
+        function showTab(tabId) {
+            // Hide all tables
+            document.querySelectorAll('.schedule-table').forEach(table => {
+                table.classList.remove('active');
+            });
+            
+            // Show selected table
+            document.getElementById(tabId).classList.add('active');
+            
+            // Update button styles
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Find the button that was clicked and make it active
+            event.target.classList.add('active');
+        }
+        
+        // Add hover effect to show more details
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add any additional interactive behaviors here
+            const cells = document.querySelectorAll('.schedule-table td:not(.day-column):not(.university-activity)');
+            
+            cells.forEach(cell => {
+                cell.addEventListener('mouseover', () => {
+                    cell.style.backgroundColor = '#e8f4fc';
+                    cell.style.transform = 'scale(1.02)';
+                    cell.style.transition = 'all 0.2s ease';
+                    cell.style.zIndex = '2';
+                    cell.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                });
+                
+                cell.addEventListener('mouseout', () => {
+                    cell.style.backgroundColor = '';
+                    cell.style.transform = '';
+                    cell.style.zIndex = '1';
+                    cell.style.boxShadow = '';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

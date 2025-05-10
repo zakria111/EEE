@@ -1,0 +1,178 @@
+  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+    .content_area {
+         margin:auto    ;
+            
+    margin-top: 2%;
+        }
+        
+        .profile-card {
+         
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.167);
+            width: 100%;
+            max-width: 700px;
+            overflow: hidden;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .profile-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid rgba(255, 255, 255, 0.349);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.808);
+            margin-bottom: 15px;
+        }
+        
+        .profile-name {
+            font-size: 2rem;
+            color: #4d4d4d;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .verified-badge {
+            background-color: #000000;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+        }
+        
+        .profile-title {
+            color: #757575;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .stat-box {
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px 25px;
+            flex: 1;
+            margin: 0 10px;
+            text-align: center;
+        }
+        
+        .stat-icon {
+            color: #757575;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+        
+        .Gpa,.any {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #4d4d4d;
+        }
+        
+        .stat-label {
+            color: #757575;
+            font-size: 0.9rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: #757575;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .social-link:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+        
+            
+        
+        .book-btn:hover {
+            background-color: #5b4bc4;
+            transform: translateY(-2px);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .stats-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stat-box {
+                margin: 0;
+            }
+            
+            .tab {
+                padding: 15px;
+                font-size: 0.9rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .profile-card {
+                padding: 20px;
+            }
+            
+            .profile-img {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .profile-name {
+                font-size: 1.5rem;
+            }
+            
+            .profile-title {
+                font-size: 1rem;
+            }
+            
+            .social-links {
+                gap: 10px;
+            }
+            
+            .social-link {
+                width: 40px;
+                height: 40px;
+            }
+        }

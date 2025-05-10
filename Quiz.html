@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Quiz App</title>
+  <link rel="stylesheet" href="Quiz.css">
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Smart Quiz App</h1>
+        <p>Test your knowledge in various subjects</p>
+      </header>
+
+      <!-- Subject Selection Screen -->
+      <div class="subject-selection" id="subjectSelection">
+        <div class="subject-card" data-subject="operations">
+          <div class="subject-icon">📊</div>
+          <h3>Operations Research</h3>
+          <p>Test your optimization skills</p>
+        </div>
+        <div class="subject-card" data-subject="assembly">
+          <div class="subject-icon">⚙️</div>
+          <h3>Assembly Language</h3>
+          <p>Explore low-level programming</p>
+        </div>
+        <div class="subject-card" data-subject="datastructures">
+          <div class="subject-icon">🔍</div>
+          <h3>Data Structures</h3>
+          <p>Master algorithms and structures</p>
+        </div>
+        <div class="subject-card" data-subject="multimedia">
+          <div class="subject-icon">🎬</div>
+          <h3>Fundamentals of Multimedia</h3>
+          <p>Learn about multimedia systems</p>
+        </div>
+        <div class="subject-card" data-subject="systemsanalysis">
+          <div class="subject-icon">📝</div>
+          <h3>Systems Analysis and Design</h3>
+          <p>Study system development</p>
+        </div>
+        <div class="subject-card" data-subject="webprogramming">
+          <div class="subject-icon">💻</div>
+          <h3>Web Programming</h3>
+          <p>Develop web applications</p>
+        </div>
+      </div>
+
+      <!-- Quiz Screen -->
+      <div class="quiz-container" id="quizContainer">
+        <div class="quiz-header">
+          <h2 id="quizSubject">Subject Quiz</h2>
+          <div class="quiz-progress">
+            Question <span id="currentQuestion">1</span>/<span
+              id="totalQuestions"
+              >10</span
+            >
+          </div>
+          <div class="timer" id="timer">00:30</div>
+        </div>
+
+        <div class="question-container">
+          <p class="question-text" id="questionText">
+            This is where the question will appear?
+          </p>
+          <div class="options-container" id="optionsContainer">
+            <!-- Options will be added here dynamically -->
+          </div>
+          <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="quiz-footer">
+          <button class="btn btn-secondary" id="quitBtn">Quit Quiz</button>
+          <button class="btn btn-primary" id="nextBtn">Next Question</button>
+        </div>
+      </div>
+
+      <!-- Results Screen -->
+      <div class="results-container" id="resultsContainer">
+        <div class="results-header">
+          <h2>Quiz Completed!</h2>
+          <p id="resultSubject">Subject: Mathematics</p>
+        </div>
+
+        <div class="score-container">
+          <div class="score-display">
+            <span id="scoreValue">8</span>/<span id="totalValue">10</span>
+          </div>
+          <p class="score-text" id="scoreText">Great job! You're doing well!</p>
+        </div>
+
+        <div class="results-footer">
+          <button class="btn btn-secondary" id="homeBtn">Go to Home</button>
+          <button class="btn btn-success" id="retryBtn">Try Again</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Question Database
+      const questionDatabase = {
+        operations: [
+          {
+            question: "What is the main objective of Linear Programming?",
+            options: [
+              "Optimize (maximize or minimize) a linear objective function",
+              "Create programming schedules",
+              "Design logical operators",
+              "Analyze non-linear relationships"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of the following is NOT a common Operations Research technique?",
+            options: [
+              "Bytecode Optimization",
+              "Linear Programming",
+              "Queuing Theory",
+              "Network Analysis"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does the term 'feasible solution' mean in Linear Programming?",
+            options: [
+              "A solution that satisfies all constraints",
+              "The optimal solution to the problem",
+              "A solution that maximizes profit",
+              "Any possible numeric solution"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which method is commonly used to solve Linear Programming problems?",
+            options: [
+              "Simplex Method",
+              "Quick Sort Algorithm",
+              "Hash Table Lookup",
+              "Binary Search"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is an application of Operations Research?",
+            options: [
+              "Supply chain management",
+              "Syntax highlighting",
+              "Compiler design",
+              "Web server configuration"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the transportation problem in Operations Research?",
+            options: [
+              "Finding the least-cost means of transporting items",
+              "Determining highway traffic patterns",
+              "Calculating fastest delivery routes",
+              "Designing vehicle engines"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the purpose of sensitivity analysis in Operations Research?",
+            options: [
+              "To determine how changes in inputs affect the optimal solution",
+              "To measure user satisfaction with results",
+              "To test system responsiveness",
+              "To analyze emotional responses to decisions"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is a queuing theory parameter?",
+            options: [
+              "Arrival rate",
+              "Memory allocation",
+              "Disk fragmentation",
+              "Processor speed"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does PERT stand for in Operations Research?",
+            options: [
+              "Program Evaluation and Review Technique",
+              "Performance Evaluation and Revision Tool",
+              "Project Execution and Resource Tracking",
+              "Process Efficiency Rating Test"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the goal of the assignment problem in Operations Research?",
+            options: [
+              "To assign tasks to resources to minimize total cost or time",
+              "To assign memory to processes",
+              "To assign grades to students",
+              "To assign IP addresses to devices"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+        assembly: [
+          {
+            question: "What does the MOV instruction do in x86 assembly?",
+            options: [
+              "Copies data from source to destination",
+              "Moves physical hardware components",
+              "Creates a moving animation",
+              "Shifts bits to the right"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which register is commonly used as the accumulator in x86 assembly?",
+            options: [
+              "EAX/RAX",
+              "ESP/RSP",
+              "EBP/RBP",
+              "EDI/RDI"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the purpose of the PUSH instruction?",
+            options: [
+              "Store a value on the stack",
+              "Increase a value by 1",
+              "Compare two values",
+              "Jump to a different memory location"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which addressing mode uses an offset from a base register?",
+            options: [
+              "Base-indexed addressing",
+              "Immediate addressing",
+              "Register addressing",
+              "Direct addressing"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does the JMP instruction do?",
+            options: [
+              "Transfers control to another location",
+              "Compares two values",
+              "Performs a logical AND operation",
+              "Increments a counter"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the purpose of the CMP instruction?",
+            options: [
+              "Compare two operands and set flags",
+              "Complement all bits in a register",
+              "Copy memory from one location to another",
+              "Clear all registers to zero"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "In assembly language, what are opcodes?",
+            options: [
+              "Machine language operation codes",
+              "Operating system codes",
+              "Optional coding segments",
+              "Output control data"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is a key difference between RISC and CISC architectures?",
+            options: [
+              "RISC uses simpler instructions that execute in one cycle",
+              "RISC uses more complex instructions than CISC",
+              "RISC requires more memory than CISC",
+              "RISC is always faster than CISC"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does the LEA instruction do in x86 assembly?",
+            options: [
+              "Load Effective Address - calculates address without accessing memory",
+              "Logical Exclusive Addition - performs XOR and addition",
+              "Load External Array - loads data from external storage",
+              "Logic Enhancement Access - improves logical operations"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which register holds the instruction pointer in x86-64?",
+            options: [
+              "RIP",
+              "RAX",
+              "RSP",
+              "RBP"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+        datastructures: [
+          {
+            question: "What is the time complexity of binary search?",
+            options: [
+              "O(log n)",
+              "O(n)",
+              "O(n log n)",
+              "O(n²)"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which data structure operates on the LIFO principle?",
+            options: [
+              "Stack",
+              "Queue",
+              "Linked List",
+              "Binary Tree"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the worst-case time complexity of quicksort?",
+            options: [
+              "O(n²)",
+              "O(n)",
+              "O(log n)",
+              "O(n log n)"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is NOT a balanced binary search tree?",
+            options: [
+              "Linked Binary Tree",
+              "AVL Tree",
+              "Red-Black Tree",
+              "B-Tree"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the primary advantage of a hash table?",
+            options: [
+              "Fast average case for insertions, deletions, and lookups",
+              "Guaranteed sequence ordering",
+              "Memory efficiency",
+              "Simplicity of implementation"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "In a min-heap, what is true about the root node?",
+            options: [
+              "It contains the minimum value in the heap",
+              "It contains the maximum value in the heap",
+              "It is always balanced",
+              "It always has two children"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the key characteristic of a queue data structure?",
+            options: [
+              "FIFO (First In, First Out)",
+              "LIFO (Last In, First Out)",
+              "Random access",
+              "Hierarchical organization"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which data structure would be most efficient for implementing a dictionary?",
+            options: [
+              "Hash Table",
+              "Array",
+              "Linked List",
+              "Stack"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the space complexity of an adjacency matrix representation of a graph with n vertices?",
+            options: [
+              "O(n²)",
+              "O(n)",
+              "O(e) where e is the number of edges",
+              "O(n log n)"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is a B-tree primarily optimized for?",
+            options: [
+              "Disk access patterns and I/O operations",
+              "Memory-resident search operations",
+              "Recursive algorithms",
+              "Neural network computations"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+        multimedia: [
+          {
+            question: "Which of the following is NOT a common image file format?",
+            options: [
+              "SVQ",
+              "JPEG",
+              "PNG",
+              "GIF"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the full form of MPEG?",
+            options: [
+              "Moving Picture Experts Group",
+              "Multimedia Programming Expert Group",
+              "Multi Picture Enhancement Guide",
+              "Media Picture Encoding Group"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which color model is based on light emission?",
+            options: [
+              "RGB",
+              "CMYK",
+              "HSV",
+              "YCbCr"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the sampling rate of CD-quality audio?",
+            options: [
+              "44.1 kHz",
+              "22.05 kHz",
+              "48 kHz",
+              "96 kHz"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which compression technique is lossy?",
+            options: [
+              "JPEG",
+              "PNG",
+              "GIF",
+              "TIFF"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does the term 'codec' stand for?",
+            options: [
+              "Compressor-Decompressor",
+              "Coder-Decoder",
+              "Content Decryption",
+              "Color Depth Calculation"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of the following is a vector graphics format?",
+            options: [
+              "SVG",
+              "JPEG",
+              "BMP",
+              "TIFF"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the primary purpose of chroma subsampling in video compression?",
+            options: [
+              "Reduce color information while preserving luminance",
+              "Increase color saturation",
+              "Enhance edge detection",
+              "Improve audio synchronization"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which audio format supports lossless compression?",
+            options: [
+              "FLAC",
+              "MP3",
+              "AAC",
+              "WMA"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does FPS stand for in multimedia?",
+            options: [
+              "Frames Per Second",
+              "File Processing System",
+              "Format Processing Sequence",
+              "Fast Picture Synthesis"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+        systemsanalysis: [
+          {
+            question: "What is the primary purpose of a feasibility study?",
+            options: [
+              "To evaluate if a project is worth pursuing",
+              "To implement system components",
+              "To design user interfaces",
+              "To write technical documentation"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does DFD stand for in systems analysis?",
+            options: [
+              "Data Flow Diagram",
+              "Direct Function Diagram",
+              "Design Format Document",
+              "Development Framework Description"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of the following is NOT a common system development methodology?",
+            options: [
+              "Quantum Development",
+              "Waterfall",
+              "Agile",
+              "Spiral"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does a use case diagram primarily depict?",
+            options: [
+              "Interactions between users and a system",
+              "System architecture",
+              "Database schema",
+              "Program control flow"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is a key characteristic of the Agile methodology?",
+            options: [
+              "Iterative development with frequent customer feedback",
+              "Complete documentation before coding begins",
+              "Minimal customer involvement until testing",
+              "Linear progression through phases"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the purpose of an entity-relationship diagram?",
+            options: [
+              "To model data relationships in a database",
+              "To show system hardware connections",
+              "To depict user interface elements",
+              "To document program execution flow"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which phase typically comes first in the systems development life cycle?",
+            options: [
+              "Requirements gathering",
+              "Implementation",
+              "Design",
+              "Testing"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is a primary benefit of prototyping?",
+            options: [
+              "Early user feedback on system functionality",
+              "Complete system documentation",
+              "Reduced need for testing",
+              "Elimination of maintenance costs"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does JAD stand for in systems analysis?",
+            options: [
+              "Joint Application Development",
+              "Java Application Design",
+              "Justified Architectural Decisions",
+              "Junction Analysis Documentation"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which diagram shows the structure of a system in terms of classes and their relationships?",
+            options: [
+              "Class diagram",
+              "Activity diagram",
+              "Sequence diagram",
+              "Deployment diagram"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+        webprogramming: [
+          {
+            question: "Which language is primarily used for adding styling to web pages?",
+            options: [
+              "CSS",
+              "HTML",
+              "JavaScript",
+              "PHP"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does DOM stand for in web development?",
+            options: [
+              "Document Object Model",
+              "Data Object Management",
+              "Digital Ordinance Model",
+              "Display Object Manipulation"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is NOT a JavaScript framework or library?",
+            options: [
+              "WebFlow",
+              "React",
+              "Angular",
+              "Vue"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the primary purpose of the HTML <canvas> element?",
+            options: [
+              "To draw graphics via scripting",
+              "To display tabular data",
+              "To embed videos",
+              "To create navigation menus"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which protocol is used to transfer web pages from a server to a client?",
+            options: [
+              "HTTP/HTTPS",
+              "FTP",
+              "SMTP",
+              "SSH"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What does API stand for in web development?",
+            options: [
+              "Application Programming Interface",
+              "Advanced Programming Integration",
+              "Applied Protocol Interface",
+              "Automated Program Instruction"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which of these is a server-side programming language?",
+            options: [
+              "PHP",
+              "HTML",
+              "CSS",
+              "jQuery"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is the purpose of AJAX in web applications?",
+            options: [
+              "To update parts of a webpage without reloading the entire page",
+              "To enhance security features",
+              "To create responsive layouts",
+              "To compress image files"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "Which method is used to retrieve data from an HTTP server with JavaScript?",
+            options: [
+              "fetch()",
+              "push()",
+              "pull()",
+              "extract()"
+            ],
+            correctAnswer: 0,
+          },
+          {
+            question: "What is a cookie in web programming?",
+            options: [
+              "A small piece of data stored on the client's computer",
+              "A function that repeats itself",
+              "A temporary backup file",
+              "A type of web animation"
+            ],
+            correctAnswer: 0,
+          },
+        ],
+      };
+
+      // Global variables
+      let currentSubject = "";
+      let currentQuestions = [];
+      let currentQuestionIndex = 0;
+      let score = 0;
+      let timerInterval;
+      let timeRemaining = 30;
+      let questionAnswered = false;
+
+      // DOM elements
+      const subjectSelection = document.getElementById("subjectSelection");
+      const quizContainer = document.getElementById("quizContainer");
+      const resultsContainer = document.getElementById("resultsContainer");
+      const quizSubject = document.getElementById("quizSubject");
+      const currentQuestionEl = document.getElementById("currentQuestion");
+      const totalQuestionsEl = document.getElementById("totalQuestions");
+      const questionText = document.getElementById("questionText");
+      const optionsContainer = document.getElementById("optionsContainer");
+      const feedbackEl = document.getElementById("feedback");
+      const timerEl = document.getElementById("timer");
+      const nextBtn = document.getElementById("nextBtn");
+      const quitBtn = document.getElementById("quitBtn");
+      const resultSubject = document.getElementById("resultSubject");
+      const scoreValue = document.getElementById("scoreValue");
+      const totalValue = document.getElementById("totalValue");
+      const scoreText = document.getElementById("scoreText");
+      const homeBtn = document.getElementById("homeBtn");
+      const retryBtn = document.getElementById("retryBtn");
+
+      // Initialize event listeners
+      function initApp() {
+        // Subject selection
+        const subjectCards = document.querySelectorAll(".subject-card");
+        subjectCards.forEach((card) => {
+          card.addEventListener("click", () => {
+            const subject = card.getAttribute("data-subject");
+            startQuiz(subject);
+          });
+        });
+
+        // Quiz navigation
+        nextBtn.addEventListener("click", handleNextQuestion);
+        quitBtn.addEventListener("click", goToHome);
+
+        // Results navigation
+        homeBtn.addEventListener("click", goToHome);
+        retryBtn.addEventListener("click", () => {
+          startQuiz(currentSubject);
+        });
+      }
+
+      // Start the quiz for a specific subject
+      function startQuiz(subject) {
+        currentSubject = subject;
+        currentQuestionIndex = 0;
+        score = 0;
+
+        // Get questions for this subject and shuffle them
+        currentQuestions = [...questionDatabase[subject]];
+        shuffleArray(currentQuestions);
+
+        // Limit to 10 questions if there are more
+        if (currentQuestions.length > 10) {
+          currentQuestions = currentQuestions.slice(0, 10);
+        }
+
+        // Update UI
+        subjectSelection.style.display = "none";
+        quizContainer.style.display = "block";
+        resultsContainer.style.display = "none";
+
+        // Format subject name for display
+        const formattedSubject =
+          subject.charAt(0).toUpperCase() + subject.slice(1);
+        quizSubject.textContent = formattedSubject + " Quiz";
+
+        // Set question count
+        totalQuestionsEl.textContent = currentQuestions.length;
+
+        // Load first question
+        loadQuestion();
+      }
+
+      // Load the current question
+      function loadQuestion() {
+        clearInterval(timerInterval);
+        questionAnswered = false;
+
+        // Reset timer
+        timeRemaining = 30;
+        updateTimer();
+        startTimer();
+
+        // Update question number
+        currentQuestionEl.textContent = currentQuestionIndex + 1;
+
+        // Get current question
+        const question = currentQuestions[currentQuestionIndex];
+
+        // Update question text
+        questionText.textContent = question.question;
+
+        // Clear previous options and feedback
+        optionsContainer.innerHTML = "";
+        feedbackEl.style.display = "none";
+
+        // Add options
+        question.options.forEach((option, index) => {
+          const optionEl = document.createElement("div");
+          optionEl.className = "option";
+          optionEl.textContent = option;
+          optionEl.addEventListener("click", () => {
+            if (!questionAnswered) {
+              checkAnswer(index);
+            }
+          });
+          optionsContainer.appendChild(optionEl);
+        });
+
+        // Disable next button until answer is selected
+        nextBtn.disabled = true;
+      }
+
+      // Check if the selected answer is correct
+      function checkAnswer(selectedIndex) {
+        questionAnswered = true;
+        clearInterval(timerInterval);
+
+        const question = currentQuestions[currentQuestionIndex];
+        const options = document.querySelectorAll(".option");
+
+        // Check if answer is correct
+        if (selectedIndex === question.correctAnswer) {
+          options[selectedIndex].classList.add("correct");
+          options[selectedIndex].classList.add("selected");
+          score++;
+
+          // Show feedback
+          feedbackEl.textContent = "Correct answer!";
+          feedbackEl.className = "feedback correct";
+          feedbackEl.style.display = "block";
+        } else {
+          options[selectedIndex].classList.add("incorrect");
+          options[selectedIndex].classList.add("selected");
+          options[question.correctAnswer].classList.add("correct");
+
+          // Show feedback
+          feedbackEl.textContent =
+            "Incorrect. The correct answer is: " +
+            question.options[question.correctAnswer];
+          feedbackEl.className = "feedback incorrect";
+          feedbackEl.style.display = "block";
+        }
+
+        // Enable next button
+        nextBtn.disabled = false;
+      }
+
+      // Handle next question button click
+      function handleNextQuestion() {
+        currentQuestionIndex++;
+
+        // Check if quiz is finished
+        if (currentQuestionIndex >= currentQuestions.length) {
+          showResults();
+        } else {
+          loadQuestion();
+        }
+      }
+
+      // Show quiz results
+      function showResults() {
+        quizContainer.style.display = "none";
+        resultsContainer.style.display = "block";
+
+        // Format subject name for display
+        const formattedSubject =
+          currentSubject.charAt(0).toUpperCase() + currentSubject.slice(1);
+        resultSubject.textContent = "Subject: " + formattedSubject;
+
+        // Display score
+        scoreValue.textContent = score;
+        totalValue.textContent = currentQuestions.length;
+
+        // Generate score text based on performance
+        const percentage = (score / currentQuestions.length) * 100;
+
+        if (percentage >= 90) {
+          scoreText.textContent = "Excellent! You're a master of this subject!";
+        } else if (percentage >= 70) {
+          scoreText.textContent = "Good job! You have a solid understanding!";
+        } else if (percentage >= 50) {
+          scoreText.textContent = "Not bad! Keep studying to improve!";
+        } else {
+          scoreText.textContent = "You need more practice with this subject.";
+        }
+      }
+
+      // Timer functions
+      function startTimer() {
+        timerInterval = setInterval(() => {
+          timeRemaining--;
+          updateTimer();
+
+          if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            handleTimeUp();
+          }
+        }, 1000);
+      }
+
+      function updateTimer() {
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        timerEl.textContent = `${minutes.toString().padStart(2, "0")}:${seconds
+          .toString()
+          .padStart(2, "0")}`;
+
+        // Change color when time is running out
+        if (timeRemaining <= 5) {
+          timerEl.style.color = "#ff0000";
+        } else {
+          timerEl.style.color = "#e74c3c";
+        }
+      }
+
+      function handleTimeUp() {
+        if (!questionAnswered) {
+          questionAnswered = true;
+
+          // Show all options with correct answer highlighted
+          const options = document.querySelectorAll(".option");
+          const correctIndex =
+            currentQuestions[currentQuestionIndex].correctAnswer;
+          options[correctIndex].classList.add("correct");
+
+          // Show feedback
+          feedbackEl.textContent =
+            "Time's up! The correct answer is: " +
+            currentQuestions[currentQuestionIndex].options[correctIndex];
+          feedbackEl.className = "feedback incorrect";
+          feedbackEl.style.display = "block";
+
+          // Enable next button
+          nextBtn.disabled = false;
+        }
+      }
+
+      // Utility function to shuffle array
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      // Return to home screen
+      function goToHome() {
+        clearInterval(timerInterval);
+        subjectSelection.style.display = "grid";
+        quizContainer.style.display = "none";
+        resultsContainer.style.display = "none";
+      }
+
+      // Initialize the app
+      document.addEventListener("DOMContentLoaded", initApp);
+    </script>
+  </body>
+</html>

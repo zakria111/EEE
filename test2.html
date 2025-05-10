@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Programming Language Circles</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f2 100%);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      cursor: none;
+    }
+    
+    .capsule {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%; /* Changed to 50% for perfect circles */
+      cursor: pointer;
+      user-select: none;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transform: translate(var(--x, 0), var(--y, 0)) rotate(var(--r, 0));
+      z-index: calc(1 + var(--index, 0));
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.3s ease, 
+                  opacity 0.5s ease;
+      /* Make width and height equal for circles */
+      width: var(--size, 80px);
+      height: var(--size, 80px);
+      /* Remove transition for position to allow more dynamic movement */
+    }
+    
+    .capsule:hover {
+      transform: scale(1.1) translateY(-5px) rotate(0deg);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+    }
+    
+    .capsule-sm {
+      --size: 60px;
+      font-size: 12px;
+    }
+    
+    .capsule-md {
+      --size: 80px;
+      font-size: 14px;
+    }
+    
+    .capsule-lg {
+      --size: 100px;
+      font-size: 16px;
+    }
+    
+    .capsule-red {
+      background: linear-gradient(135deg, #ff7e7e, #ff5252);
+      color: white;
+    }
+    
+    .capsule-blue {
+      background: linear-gradient(135deg, #7eb6ff, #5271ff);
+      color: white;
+    }
+    
+    .capsule-purple {
+      background: linear-gradient(135deg, #c17eff, #8952ff);
+      color: white;
+    }
+    
+    .capsule-green {
+      background: linear-gradient(135deg, #7effb2, #52ff8e);
+      color: #1a1a1a;
+    }
+    
+    .capsule-yellow {
+      background: linear-gradient(135deg, #ffe77e, #ffd452);
+      color: #1a1a1a;
+    }
+    
+    .capsule-pink {
+      background: linear-gradient(135deg, #ff7ec5, #ff52a8);
+      color: white;
+    }
+    
+    .capsule-teal {
+      background: linear-gradient(135deg, #7effe4, #52d4ff);
+      color: #1a1a1a;
+    }
+    
+    .capsule-orange {
+      background: linear-gradient(135deg, #ffb77e, #ff8c52);
+      color: white;
+    }
+    
+    .mini-pill {
+      position: absolute;
+      width: 6px;
+      height: 6px; /* Changed to make it circular */
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 50%; /* Changed to 50% for circles */
+      animation: float 8s infinite ease-in-out;
+      opacity: 0.5;
+      z-index: 0;
+    }
+    
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) rotate(0);
+      }
+      50% {
+        transform: translateY(-20px) rotate(10deg);
+      }
+    }
+    
+    .custom-cursor {
+      position: fixed;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: difference;
+      transition: width 0.3s, height 0.3s, background-color 0.3s;
+    }
+    
+    .custom-cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      z-index: 10000;
+      mix-blend-mode: difference;
+      transition: transform 0.1s;
+    }
+    
+    .capsule.active {
+      transform: scale(1.2) translateY(-10px);
+      opacity: 1;
+      z-index: 101;
+    }
+    
+    .content {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+      transition: box-shadow 0.5s ease;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <!-- Custom cursor elements -->
+    <div class="custom-cursor"></div>
+    <div class="custom-cursor-dot"></div>
+    
+    <!-- Content will be populated by JavaScript -->
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const container = document.getElementById("container");
+      const colors = [
+        "red",
+        "blue",
+        "purple",
+        "green",
+        "yellow",
+        "pink",
+        "teal",
+        "orange",
+      ];
+      
+      const sizes = ["sm", "md", "lg"];
+      const words = [
+        "Python",
+        "JavaScript",
+        "C",
+        "C++",
+        "Java",
+        "C#",
+        "Ruby",
+        "Go",
+        "Rust",
+        "Kotlin",
+        "Swift",
+        "PHP",
+        "TypeScript",
+        "SQL",
+        "Perl",
+        "R",
+      
+        "Dart",
+       
+      ];
+      
+      // Store all capsules to check for collisions
+      const allCapsules = [];
+      
+      // Create capsules
+      for (let i = 0; i < 10; i++) { // Reduced from 70 to 50 to reduce overcrowding
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = sizes[Math.floor(Math.random() * sizes.length)];
+        const word = words[Math.floor(Math.random() * words.length)];
+        const capsule = document.createElement("div");
+        capsule.className = `capsule capsule-${color} capsule-${size}`;
+        capsule.textContent = word;
+        
+        // Set random position
+        const xPos = Math.floor(Math.random() * 80) - 40;
+        const yPos = Math.floor(Math.random() * 80) - 40;
+        const rotation = Math.floor(Math.random() * 20) - 10;
+        capsule.style.setProperty("--x", `${xPos}px`);
+        capsule.style.setProperty("--y", `${yPos}px`);
+        capsule.style.setProperty("--r", `${rotation}deg`);
+        capsule.style.setProperty("--index", i);
+        
+        // Set initial random positions with safety margin
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        
+        // Store capsule information for collision detection
+        const capsuleInfo = {
+          element: capsule,
+          size: size === "lg" ? 100 : size === "md" ? 80 : 60,
+          x: Math.random() * (screenWidth - 200) + 100,
+          y: Math.random() * (screenHeight - 200) + 100,
+          velocityX: 0,
+          velocityY: 0
+        };
+        
+        // Set initial position
+        capsule.style.left = `${capsuleInfo.x}px`;
+        capsule.style.top = `${capsuleInfo.y}px`;
+        
+        // Add to our tracking array
+        allCapsules.push(capsuleInfo);
+        
+        container.appendChild(capsule);
+      }
+      
+      // Function to check if two capsules are overlapping
+      function checkCollision(capsule1, capsule2) {
+        const dx = capsule1.x - capsule2.x;
+        const dy = capsule1.y - capsule2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const minDistance = (capsule1.size + capsule2.size) / 2;
+        
+        return distance < minDistance;
+      }
+      
+      // Function to resolve collisions
+      function resolveCollisions() {
+        for (let i = 0; i < allCapsules.length; i++) {
+          for (let j = i + 1; j < allCapsules.length; j++) {
+            const capsule1 = allCapsules[i];
+            const capsule2 = allCapsules[j];
+            
+            if (checkCollision(capsule1, capsule2)) {
+              // Calculate collision response
+              const dx = capsule2.x - capsule1.x;
+              const dy = capsule2.y - capsule1.y;
+              const distance = Math.sqrt(dx * dx + dy * dy) || 1; // Avoid division by zero
+              
+              // Minimum distance to separate them
+              const minDistance = (capsule1.size + capsule2.size) / 2;
+              
+              // Normalized direction of the force
+              const nx = dx / distance;
+              const ny = dy / distance;
+              
+              // Magnitude of the overlap
+              const overlap = minDistance - distance;
+              
+              // Move each capsule half of the overlap distance
+              const moveX = nx * overlap * 0.5;
+              const moveY = ny * overlap * 0.5;
+              
+              // Update positions
+              capsule1.x -= moveX;
+              capsule1.y -= moveY;
+              capsule2.x += moveX;
+              capsule2.y += moveY;
+              
+              // Exchange velocity (simplified collision response)
+              const tempVX = capsule1.velocityX;
+              const tempVY = capsule1.velocityY;
+              capsule1.velocityX = capsule2.velocityX * 0.9; // 0.9 to lose some energy
+              capsule1.velocityY = capsule2.velocityY * 0.9;
+              capsule2.velocityX = tempVX * 0.9;
+              capsule2.velocityY = tempVY * 0.9;
+            }
+          }
+        }
+      }
+      
+      // Add mini-pill decorations
+      for (let i = 0; i < 30; i++) {
+        const miniPill = document.createElement("div");
+        miniPill.className = "mini-pill";
+        // Set random positions
+        miniPill.style.left = `${Math.random() * 100}%`;
+        miniPill.style.top = `${Math.random() * 100}%`;
+        miniPill.style.animationDelay = `${Math.random() * 1}s`;
+        container.appendChild(miniPill);
+      }
+      
+      // Custom cursor setup
+      const customCursor = document.querySelector(".custom-cursor");
+      const customCursorDot = document.querySelector(".custom-cursor-dot");
+      
+      // Mouse position tracking
+      let mouseX = window.innerWidth / 2;
+      let mouseY = window.innerHeight / 2;
+      
+      document.addEventListener("mousemove", (e) => {
+        // Update mouse position
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        
+        // Update custom cursor position
+        customCursor.style.left = `${mouseX}px`;
+        customCursor.style.top = `${mouseY}px`;
+        customCursorDot.style.left = `${mouseX}px`;
+        customCursorDot.style.top = `${mouseY}px`;
+      });
+      
+      // Animation loop for fluid movement using physics-based approach
+      function animate() {
+        allCapsules.forEach((capsuleInfo, index) => {
+          const capsule = capsuleInfo.element;
+          
+          // Calculate distance to mouse
+          const distanceX = mouseX - capsuleInfo.x;
+          const distanceY = mouseY - capsuleInfo.y;
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+          
+          // Physics parameters
+          const maxForce = 0.3;  // Reduced from 0.4 for gentler movement
+          const maxSpeed = 12;   // Reduced from 15 for more control
+          const friction = 0.92; // Increased from 0.87 for more damping
+          const closeRange = 100; // Distance where strong attraction begins
+          
+          // Calculate attraction force based on distance
+          let forceStrength;
+          if (distance < closeRange) {
+            forceStrength = maxForce * 2; // Strong attraction when very close
+            
+            // Visual indication of close proximity
+            customCursor.style.width = "70px";
+            customCursor.style.height = "70px";
+            customCursor.style.backgroundColor = "rgba(255, 255, 255, 0.4)";
+            
+            // Add visual effect for close capsules
+            capsule.style.boxShadow = "0 8px 20px rgba(0, 0, 0, 0.2)";
+          } else {
+            // Gradually reduce force with distance using inverse square law
+            forceStrength = maxForce * (1000 / (distance * distance + 1000));
+            
+            // Reset cursor and capsule appearance
+            customCursor.style.width = "40px";
+            customCursor.style.height = "40px";
+            customCursor.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+            capsule.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.1)";
+          }
+          
+          // Calculate force components
+          let forceX = distanceX * forceStrength;
+          let forceY = distanceY * forceStrength;
+          
+          // Apply force to velocity with mass influence (bigger capsules move slower)
+          const sizeClass = capsule.className.match(/capsule-(sm|md|lg)/)[1];
+          const mass = sizeClass === "lg" ? 1.8 : sizeClass === "md" ? 1.4 : 1; // Adjusted mass
+          
+          // Update velocity with acceleration and friction
+          capsuleInfo.velocityX = capsuleInfo.velocityX * friction + forceX / mass;
+          capsuleInfo.velocityY = capsuleInfo.velocityY * friction + forceY / mass;
+          
+          // Limit velocity to max speed
+          const speed = Math.sqrt(capsuleInfo.velocityX * capsuleInfo.velocityX + capsuleInfo.velocityY * capsuleInfo.velocityY);
+          if (speed > maxSpeed) {
+            capsuleInfo.velocityX = (capsuleInfo.velocityX / speed) * maxSpeed;
+            capsuleInfo.velocityY = (capsuleInfo.velocityY / speed) * maxSpeed;
+          }
+          
+          // Update position
+          capsuleInfo.x += capsuleInfo.velocityX;
+          capsuleInfo.y += capsuleInfo.velocityY;
+          
+          // Constrain position to screen bounds with bounce effect
+          const padding = 50;
+          const screenWidth = window.innerWidth;
+          const screenHeight = window.innerHeight;
+          const radius = capsuleInfo.size / 2;
+          
+          if (capsuleInfo.x < radius) {
+            capsuleInfo.x = radius;
+            capsuleInfo.velocityX *= -0.5; // Bounce with energy loss
+          } else if (capsuleInfo.x > screenWidth - radius) {
+            capsuleInfo.x = screenWidth - radius;
+            capsuleInfo.velocityX *= -0.5; // Bounce with energy loss
+          }
+          
+          if (capsuleInfo.y < radius) {
+            capsuleInfo.y = radius;
+            capsuleInfo.velocityY *= -0.5; // Bounce with energy loss
+          } else if (capsuleInfo.y > screenHeight - radius) {
+            capsuleInfo.y = screenHeight - radius;
+            capsuleInfo.velocityY *= -0.5; // Bounce with energy loss
+          }
+          
+          // Apply the new position
+          capsule.style.left = `${capsuleInfo.x - radius}px`;
+          capsule.style.top = `${capsuleInfo.y - radius}px`;
+          
+          // Visual tilt effect based on velocity
+          const tiltX = -capsuleInfo.velocityY * 0.8; // Reduced from 1.5 for less dramatic tilt
+          const tiltY = capsuleInfo.velocityX * 0.8;
+          const tilt = Math.min(Math.max(tiltY, -15), 15); // Limit tilt range
+          
+          // Apply visual effects using transform
+          capsule.style.setProperty("--x", `${tiltX}px`);
+          capsule.style.setProperty("--y", `${tiltY}px`);
+          capsule.style.setProperty("--r", `${tilt}deg`);
+        });
+        
+        // Resolve collisions between capsules
+        resolveCollisions();
+        
+        // Apply updated positions to DOM
+        allCapsules.forEach(capsule => {
+          const radius = capsule.size / 2;
+          capsule.element.style.left = `${capsule.x - radius}px`;
+          capsule.element.style.top = `${capsule.y - radius}px`;
+        });
+        
+        requestAnimationFrame(animate);
+      }
+      
+      animate(); // Start animation loop
+      
+      // Add click interactivity to capsules
+      allCapsules.forEach(capsuleInfo => {
+        const capsule = capsuleInfo.element;
+        
+        capsule.addEventListener("click", () => {
+          // Remove active class from all capsules
+          allCapsules.forEach(c => c.element.classList.remove("active"));
+          
+          // Add active class to clicked capsule
+          capsule.classList.add("active");
+          
+          // Apply burst velocity to all capsules based on distance
+          const centerX = capsuleInfo.x;
+          const centerY = capsuleInfo.y;
+          
+          allCapsules.forEach((otherCapsule) => {
+            if (otherCapsule !== capsuleInfo) {
+              // Calculate distance and direction
+              const dx = otherCapsule.x - centerX;
+              const dy = otherCapsule.y - centerY;
+              const distance = Math.sqrt(dx * dx + dy * dy) + 0.1; // Add small value to avoid division by zero
+              
+              // If within effect range, apply burst velocity
+              if (distance < 300) { // Reduced from 400
+                const power = 25 * (1 - distance / 300); // More power when closer
+                const burstX = (dx / distance) * power;
+                const burstY = (dy / distance) * power;
+                
+                // Apply burst
+                otherCapsule.velocityX += burstX;
+                otherCapsule.velocityY += burstY;
+              }
+            }
+          });
+          
+          // Create explosion effect around clicked capsule
+          const ripple = document.createElement("div");
+          ripple.style.position = "absolute";
+          ripple.style.left = `${centerX}px`;
+          ripple.style.top = `${centerY}px`;
+          ripple.style.width = "10px";
+          ripple.style.height = "10px";
+          ripple.style.background = "rgba(255, 255, 255, 0.8)";
+          ripple.style.borderRadius = "50%";
+          ripple.style.transform = "translate(-50%, -50%)";
+          ripple.style.zIndex = "99";
+          ripple.style.animation = "ripple 0.8s ease-out forwards";
+          
+          const keyframes = `
+            @keyframes ripple {
+              0% {
+                width: 10px;
+                height: 10px;
+                opacity: 1;
+              }
+              100% {
+                width: 300px;
+                height: 300px;
+                opacity: 0;
+              }
+            }
+          `;
+          
+          const style = document.createElement("style");
+          style.innerHTML = keyframes;
+          document.head.appendChild(style);
+          document.body.appendChild(ripple);
+          
+          setTimeout(() => {
+            document.body.removeChild(ripple);
+            document.head.removeChild(style);
+          }, 800);
+          
+          setTimeout(() => {
+            capsule.classList.remove("active");
+          }, 800);
+        });
+        
+        // Add hover effect that affects the custom cursor
+        capsule.addEventListener("mouseenter", () => {
+          customCursor.style.transform = "translate(-50%, -50%) scale(1.5)";
+          customCursor.style.backgroundColor = "rgba(255, 255, 255, 0.4)";
+          customCursorDot.style.transform = "translate(-50%, -50%) scale(1.5)";
+        });
+        
+        capsule.addEventListener("mouseleave", () => {
+          customCursor.style.transform = "translate(-50%, -50%) scale(1)";
+          customCursor.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
+          customCursorDot.style.transform = "translate(-50%, -50%) scale(1)";
+        });
+      });
+      
+      // Hide default cursor
+      document.body.style.cursor = "none";
+    });
+  </script>
+</body>
+</html>
